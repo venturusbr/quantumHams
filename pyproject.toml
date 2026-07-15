@@ -1,0 +1,73 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "quantumhams"
+version = "0.2.0"
+description = "Extensible Hamiltonians and simulation backends for quantum-computing technologies."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+authors = [{name = "Daniel de Haro Moraes"}]
+maintainers = [{name = "Venturus"}]
+keywords = ["quantum computing", "hamiltonian", "neutral atoms", "trapped ions", "cuda-q"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = ["numpy>=1.26", "scipy>=1.12"]
+
+[project.optional-dependencies]
+cudaq = ["cudaq>=0.12; platform_system == 'Linux' and platform_machine == 'x86_64'"]
+dev = [
+  "build>=1.2", "hatch>=1.14", "mypy>=1.11", "pre-commit>=4.0",
+  "pytest>=8.3", "pytest-cov>=6.0", "ruff>=0.9", "twine>=6.0"
+]
+docs = ["mkdocs>=1.6", "mkdocs-material>=9.6", "mkdocstrings[python]>=0.28"]
+
+[project.urls]
+Homepage = "https://github.com/venturus/quantumHams"
+Documentation = "https://venturus.github.io/quantumHams/"
+Repository = "https://github.com/venturus/quantumHams"
+Issues = "https://github.com/venturus/quantumHams/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/quantumhams"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers --strict-config --cov=quantumhams --cov-report=term-missing --cov-fail-under=90"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["quantumhams"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+packages = ["quantumhams"]
+
+[tool.hatch.envs.default]
+features = ["dev", "docs"]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+lint = ["ruff check .", "ruff format --check .", "mypy src/quantumhams"]
+format = ["ruff check --fix .", "ruff format ."]
+build = "python -m build"

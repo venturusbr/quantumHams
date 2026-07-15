@@ -1,0 +1,16 @@
+site_name: quantumHams
+site_description: Extensible Hamiltonians for quantum-computing technologies
+repo_url: https://github.com/venturus/quantumHams
+repo_name: venturus/quantumHams
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - Usage: usage.md
+  - Extending: extending.md
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]

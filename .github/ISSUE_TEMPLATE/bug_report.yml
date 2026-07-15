@@ -1,0 +1,12 @@
+name: Bug report
+description: Report reproducible incorrect behavior
+body:
+  - type: textarea
+    attributes: {label: Description, description: What happened and what did you expect?}
+    validations: {required: true}
+  - type: textarea
+    attributes: {label: Reproduction, description: Provide a minimal reproducible example.}
+    validations: {required: true}
+  - type: input
+    attributes: {label: quantumHams version}
+    validations: {required: true}
