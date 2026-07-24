@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from types import SimpleNamespace
+from types import SimpleNamespace, MethodType
 from typing import Any
 
 import numpy as np
@@ -33,6 +33,8 @@ class FakeState:
 
     @classmethod
     def from_data(cls, data: Any) -> FakeState:
+        if hasattr(data, "get"):
+            data = data.get()
         return cls(np.asarray(data))
 
     def to_numpy(self) -> np.ndarray:
@@ -76,8 +78,16 @@ class FakeCudaq:
             "state": state,
             **kwargs,
         }
+        print(f"State: {state.to_numpy()}")
         states = [FakeState(state.to_numpy()) for _ in schedule.times]
-        return SimpleNamespace(intermediate_states=states)
+        result = SimpleNamespace(_intermediate_states=states)
+
+        def intermediate_states(self):
+            return self._intermediate_states
+
+        result.intermediate_states = MethodType(intermediate_states, result)
+
+        return result
 
 
 def test_cudaq_evolve_calls_native_dynamics_api() -> None:
@@ -515,9 +525,14 @@ def test_evolve_raises_when_intermediate_states_are_missing() -> None:
         state: Any,
         **kwargs: Any,
     ) -> Any:
-        return SimpleNamespace(
-            intermediate_states=None,
-        )
+        result = SimpleNamespace(_intermediate_states=None)
+                
+        def intermediate_states(self):
+            return self._intermediate_states
+
+        result.intermediate_states = MethodType(intermediate_states, result)
+
+        return result
 
     fake.evolve = evolve_without_states
 
@@ -553,13 +568,19 @@ def test_evolve_raises_for_unexpected_number_of_states() -> None:
         state: Any,
         **kwargs: Any,
     ) -> Any:
-        return SimpleNamespace(
-            intermediate_states=[
-                FakeState(
-                    [1.0, 0.0],
-                ),
-            ],
-        )
+        result = SimpleNamespace(_intermediate_states=[
+                                FakeState(
+                                    [1.0, 0.0],
+                                ),
+                            ],)
+                
+        def intermediate_states(self):
+            return self._intermediate_states
+
+        result.intermediate_states = MethodType(intermediate_states, result)
+
+        return result
+
 
     fake.evolve = evolve_with_too_few_states
 
@@ -597,13 +618,19 @@ def test_evolve_raises_for_unexpected_state_vector_dimension() -> None:
         state: Any,
         **kwargs: Any,
     ) -> Any:
-        return SimpleNamespace(
-            intermediate_states=[
-                FakeState(
-                    [1.0, 0.0, 0.0],
-                ),
-            ],
-        )
+        result = SimpleNamespace(_intermediate_states=[
+                        FakeState(
+                            [1.0, 0.0, 0.0],
+                        ),
+                    ],)
+        
+        def intermediate_states(self):
+            return self._intermediate_states
+
+        result.intermediate_states = MethodType(intermediate_states, result)
+
+        return result
+
 
     fake.evolve = evolve_with_wrong_state_dimension
 

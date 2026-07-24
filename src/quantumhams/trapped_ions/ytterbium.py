@@ -34,7 +34,7 @@ class YtterbiumIonChain:
 
 
 @dataclass(frozen=True, slots=True)
-class YtterbiumMølmerSørensenHamiltonian(HamiltonianModel):
+class YtterbiumMolmerSorensenHamiltonian(HamiltonianModel):
     r"""Effective long-range Ising Hamiltonian for a Yb trapped-ion chain.
 
     H = Σ_{i<j} J_ij X_i X_j + B Σ_i Z_i.
@@ -64,7 +64,7 @@ class YtterbiumMølmerSørensenHamiltonian(HamiltonianModel):
         coupling: float,
         exponent: float,
         transverse_field: float | np.ndarray = 0.0,
-    ) -> YtterbiumMølmerSørensenHamiltonian:
+    ) -> YtterbiumMolmerSorensenHamiltonian:
         if exponent < 0:
             raise ValueError("exponent must be non-negative.")
         matrix = np.zeros((chain.n_ions, chain.n_ions))

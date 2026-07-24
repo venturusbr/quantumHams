@@ -125,7 +125,7 @@ class CudaqBackend:
             integrator=integrator,
         )
 
-        native_states = result.intermediate_states
+        native_states = result.intermediate_states()
         if native_states is None:
             raise RuntimeError(
                 "CUDA-Q did not return intermediate states. Ensure the installed CUDA-Q "

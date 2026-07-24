@@ -4,7 +4,7 @@ from quantumhams.core.model import HamiltonianModel
 from quantumhams.core.pauli import PauliHamiltonian, PauliTerm
 from quantumhams.core.results import EvolutionResult
 from quantumhams.neutral_atoms.rubidium import NeutralAtomRegister, RubidiumRydbergHamiltonian
-from quantumhams.trapped_ions.ytterbium import YtterbiumIonChain, YtterbiumMølmerSørensenHamiltonian
+from quantumhams.trapped_ions.ytterbium import YtterbiumIonChain, YtterbiumMolmerSorensenHamiltonian
 
 __all__ = [
     "EvolutionResult",
@@ -14,7 +14,7 @@ __all__ = [
     "PauliTerm",
     "RubidiumRydbergHamiltonian",
     "YtterbiumIonChain",
-    "YtterbiumMølmerSørensenHamiltonian",
+    "YtterbiumMolmerSorensenHamiltonian",
 ]
 
 __version__ = "0.1.0"

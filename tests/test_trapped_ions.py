@@ -3,7 +3,7 @@ import pytest
 
 from quantumhams import (
     YtterbiumIonChain,
-    YtterbiumMølmerSørensenHamiltonian,
+    YtterbiumMolmerSorensenHamiltonian,
 )
 
 
@@ -102,7 +102,7 @@ def test_hamiltonian_accepts_valid_coupling_matrix() -> None:
         ],
     )
 
-    model = YtterbiumMølmerSørensenHamiltonian(
+    model = YtterbiumMolmerSorensenHamiltonian(
         chain=chain,
         coupling_matrix=couplings,
     )
@@ -125,7 +125,7 @@ def test_hamiltonian_rejects_wrong_coupling_matrix_shape() -> None:
         ValueError,
         match=r"symmetric with shape \(2, 2\)",
     ):
-        YtterbiumMølmerSørensenHamiltonian(
+        YtterbiumMolmerSorensenHamiltonian(
             chain=chain,
             coupling_matrix=np.zeros((3, 3)),
         )
@@ -147,7 +147,7 @@ def test_hamiltonian_rejects_non_symmetric_matrix() -> None:
         ValueError,
         match="coupling_matrix must be symmetric",
     ):
-        YtterbiumMølmerSørensenHamiltonian(
+        YtterbiumMolmerSorensenHamiltonian(
             chain=chain,
             coupling_matrix=couplings,
         )
@@ -163,7 +163,7 @@ def test_hamiltonian_rejects_nonzero_diagonal() -> None:
         ValueError,
         match="coupling_matrix diagonal must be zero",
     ):
-        YtterbiumMølmerSørensenHamiltonian(
+        YtterbiumMolmerSorensenHamiltonian(
             chain=chain,
             coupling_matrix=np.eye(2),
         )
@@ -179,7 +179,7 @@ def test_power_law_rejects_negative_exponent() -> None:
         ValueError,
         match="exponent must be non-negative",
     ):
-        YtterbiumMølmerSørensenHamiltonian.power_law(
+        YtterbiumMolmerSorensenHamiltonian.power_law(
             chain=chain,
             coupling=1.0,
             exponent=-0.1,
@@ -192,7 +192,7 @@ def test_power_law_couplings() -> None:
         spacing=2.0,
     )
 
-    model = YtterbiumMølmerSørensenHamiltonian.power_law(
+    model = YtterbiumMolmerSorensenHamiltonian.power_law(
         chain=chain,
         coupling=8.0,
         exponent=1.0,
@@ -218,7 +218,7 @@ def test_power_law_zero_exponent_produces_uniform_couplings() -> None:
         spacing=7.0,
     )
 
-    model = YtterbiumMølmerSørensenHamiltonian.power_law(
+    model = YtterbiumMolmerSorensenHamiltonian.power_law(
         chain=chain,
         coupling=2.5,
         exponent=0.0,
@@ -251,7 +251,7 @@ def test_pauli_hamiltonian_contains_scalar_field_and_couplings() -> None:
         ],
     )
 
-    model = YtterbiumMølmerSørensenHamiltonian(
+    model = YtterbiumMolmerSorensenHamiltonian(
         chain=chain,
         coupling_matrix=coupling_matrix,
         transverse_field=0.25,
@@ -275,7 +275,7 @@ def test_pauli_hamiltonian_supports_individual_transverse_fields() -> None:
         spacing=1.0,
     )
 
-    model = YtterbiumMølmerSørensenHamiltonian(
+    model = YtterbiumMolmerSorensenHamiltonian(
         chain=chain,
         coupling_matrix=np.zeros((3, 3)),
         transverse_field=np.array([1.0, 0.0, -0.5]),
@@ -295,7 +295,7 @@ def test_pauli_hamiltonian_skips_zero_couplings_and_fields() -> None:
         spacing=1.0,
     )
 
-    model = YtterbiumMølmerSørensenHamiltonian(
+    model = YtterbiumMolmerSorensenHamiltonian(
         chain=chain,
         coupling_matrix=np.zeros((2, 2)),
         transverse_field=0.0,
@@ -313,7 +313,7 @@ def test_pauli_hamiltonian_rejects_incompatible_field_shape() -> None:
         spacing=1.0,
     )
 
-    model = YtterbiumMølmerSørensenHamiltonian(
+    model = YtterbiumMolmerSorensenHamiltonian(
         chain=chain,
         coupling_matrix=np.zeros((3, 3)),
         transverse_field=np.array([1.0, 2.0]),

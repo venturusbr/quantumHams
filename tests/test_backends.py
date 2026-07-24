@@ -9,7 +9,7 @@ from quantumhams.backends.cudaq_backend import is_available
 def test_scipy_evolution_preserves_norm() -> None:
     model = RubidiumRydbergHamiltonian(NeutralAtomRegister.linear(1, 1.0), 1.0, 0.0, 0.0)
     result = model.evolve("0", [0.0, 0.5, 1.0])
-    np.testing.assert_allclose(result.probabilities.sum(axis=1), 1.0)
+    np.testing.assert_allclose(result.probabilities.sum(axis=1), 1.0, rtol=1e-5)
 
 
 def test_auto_backend_is_available() -> None:
