@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from types import SimpleNamespace, MethodType
+from types import MethodType, SimpleNamespace
 from typing import Any
 
 import numpy as np
@@ -526,7 +526,7 @@ def test_evolve_raises_when_intermediate_states_are_missing() -> None:
         **kwargs: Any,
     ) -> Any:
         result = SimpleNamespace(_intermediate_states=None)
-                
+
         def intermediate_states(self):
             return self._intermediate_states
 
@@ -568,19 +568,20 @@ def test_evolve_raises_for_unexpected_number_of_states() -> None:
         state: Any,
         **kwargs: Any,
     ) -> Any:
-        result = SimpleNamespace(_intermediate_states=[
-                                FakeState(
-                                    [1.0, 0.0],
-                                ),
-                            ],)
-                
+        result = SimpleNamespace(
+            _intermediate_states=[
+                FakeState(
+                    [1.0, 0.0],
+                ),
+            ],
+        )
+
         def intermediate_states(self):
             return self._intermediate_states
 
         result.intermediate_states = MethodType(intermediate_states, result)
 
         return result
-
 
     fake.evolve = evolve_with_too_few_states
 
@@ -618,19 +619,20 @@ def test_evolve_raises_for_unexpected_state_vector_dimension() -> None:
         state: Any,
         **kwargs: Any,
     ) -> Any:
-        result = SimpleNamespace(_intermediate_states=[
-                        FakeState(
-                            [1.0, 0.0, 0.0],
-                        ),
-                    ],)
-        
+        result = SimpleNamespace(
+            _intermediate_states=[
+                FakeState(
+                    [1.0, 0.0, 0.0],
+                ),
+            ],
+        )
+
         def intermediate_states(self):
             return self._intermediate_states
 
         result.intermediate_states = MethodType(intermediate_states, result)
 
         return result
-
 
     fake.evolve = evolve_with_wrong_state_dimension
 

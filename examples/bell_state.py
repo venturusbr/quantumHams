@@ -32,14 +32,16 @@ Use a quantumHams repository outside the current directory:
 from __future__ import annotations
 
 import argparse
-import sys
-from pathlib import Path
 from typing import Literal
 
 import numpy as np
 
-from quantumhams import YtterbiumIonChain, YtterbiumMolmerSorensenHamiltonian, NeutralAtomRegister, RubidiumRydbergHamiltonian
-
+from quantumhams import (
+    NeutralAtomRegister,
+    RubidiumRydbergHamiltonian,
+    YtterbiumIonChain,
+    YtterbiumMolmerSorensenHamiltonian,
+)
 
 Technology = Literal["neutral-atom", "trapped-ion"]
 ComputeBackend = Literal["cpu", "gpu", "auto"]
@@ -87,9 +89,7 @@ def state_fidelity(
     state = state / np.linalg.norm(state)
     target = target / np.linalg.norm(target)
 
-    return float(
-        np.abs(np.vdot(target, state)) ** 2
-    )
+    return float(np.abs(np.vdot(target, state)) ** 2)
 
 
 def create_neutral_atom_bell_state(
@@ -141,9 +141,7 @@ def create_neutral_atom_bell_state(
         c6=c6,
     )
 
-    final_time = np.pi / (
-        np.sqrt(2.0) * omega
-    )
+    final_time = np.pi / (np.sqrt(2.0) * omega)
 
     times = np.linspace(
         0.0,
@@ -214,9 +212,7 @@ def create_trapped_ion_bell_state(
         transverse_field=0.0,
     )
 
-    final_time = np.pi / (
-        4.0 * coupling
-    )
+    final_time = np.pi / (4.0 * coupling)
 
     times = np.linspace(
         0.0,
@@ -269,9 +265,7 @@ def print_state_vector(
         state,
         strict=True,
     ):
-        probability = float(
-            np.abs(amplitude) ** 2
-        )
+        probability = float(np.abs(amplitude) ** 2)
 
         print(
             f"{label}: "
@@ -283,10 +277,7 @@ def print_state_vector(
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description=(
-            "Create a two-qubit Bell state using a local "
-            "quantumHams repository."
-        ),
+        description=("Create a two-qubit Bell state using a local quantumHams repository."),
     )
 
     parser.add_argument(
@@ -317,8 +308,7 @@ def parse_arguments() -> argparse.Namespace:
         "--quantumhams-path",
         default=".",
         help=(
-            "Path to the local quantumHams repository root. "
-            "The default is the current directory."
+            "Path to the local quantumHams repository root. The default is the current directory."
         ),
     )
 
@@ -336,9 +326,7 @@ def main() -> None:
     args = parse_arguments()
 
     if args.samples < 2:
-        raise ValueError(
-            "--samples must be at least 2."
-        )
+        raise ValueError("--samples must be at least 2.")
 
     backend = select_backend(
         args.compute,
@@ -351,19 +339,15 @@ def main() -> None:
     print(f"Requested backend: {backend}")
 
     if args.technology == "neutral-atom":
-        final_state, target, actual_backend = (
-            create_neutral_atom_bell_state(
-                backend=backend,
-                samples=args.samples,
-            )
+        final_state, target, actual_backend = create_neutral_atom_bell_state(
+            backend=backend,
+            samples=args.samples,
         )
         target_name = "(|01> + |10>) / sqrt(2)"
     else:
-        final_state, target, actual_backend = (
-            create_trapped_ion_bell_state(
-                backend=backend,
-                samples=args.samples,
-            )
+        final_state, target, actual_backend = create_trapped_ion_bell_state(
+            backend=backend,
+            samples=args.samples,
         )
         target_name = "(|00> - i|11>) / sqrt(2)"
 
