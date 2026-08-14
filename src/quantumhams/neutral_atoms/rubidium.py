@@ -28,7 +28,7 @@ class NeutralAtomRegister:
 
     @property
     def n_atoms(self) -> int:
-        return self.positions.shape[0]
+        return int(self.positions.shape[0])
 
     @classmethod
     def linear(cls, n_atoms: int, spacing: float) -> NeutralAtomRegister:

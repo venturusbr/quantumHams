@@ -24,7 +24,7 @@ class YtterbiumIonChain:
 
     @property
     def n_ions(self) -> int:
-        return self.positions.shape[0]
+        return int(self.positions.shape[0])
 
     @classmethod
     def linear(cls, n_ions: int, spacing: float) -> YtterbiumIonChain:
