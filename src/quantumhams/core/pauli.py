@@ -17,6 +17,14 @@ _PAULI = {
 }
 
 
+def _kron_csr(
+    left: sparse.csr_matrix,
+    right: sparse.csr_matrix,
+) -> sparse.csr_matrix:
+    """Compute a Kronecker product while preserving the CSR matrix type."""
+    return sparse.csr_matrix(sparse.kron(left, right, format="csr"))
+
+
 @dataclass(frozen=True, slots=True)
 class PauliTerm:
     """A coefficient multiplied by a tensor product of Pauli operators."""
@@ -37,7 +45,8 @@ class PauliTerm:
         if self.operators and max(self.operators) >= n_qubits:
             raise ValueError("A Pauli term references a qubit outside the system.")
         factors = [_PAULI[self.operators.get(index, "I")] for index in range(n_qubits)]
-        product = reduce(sparse.kron, factors, sparse.csr_matrix([[1.0 + 0.0j]]))
+        identity: sparse.csr_matrix = sparse.csr_matrix([[1.0 + 0.0j]])
+        product = reduce(_kron_csr, factors, identity)
         return (self.coefficient * product).tocsr()
 
 
@@ -58,5 +67,5 @@ class PauliHamiltonian:
         dimension = 2**self.n_qubits
         result = sparse.csr_matrix((dimension, dimension), dtype=complex)
         for term in self.terms:
-            result += term.matrix(self.n_qubits)
+            result = result + term.matrix(self.n_qubits)
         return result if sparse_output else result.toarray()

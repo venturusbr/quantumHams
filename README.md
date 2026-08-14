@@ -1,6 +1,6 @@
 # quantumHams
 
-[![CI](https://github.com/venturus/quantumHams/actions/workflows/ci.yml/badge.svg)](https://github.com/venturus/quantumHams/actions/workflows/ci.yml)
+[![CI](https://github.com/venturusbr/quantumHams/actions/workflows/ci.yml/badge.svg)](https://github.com/venturusbr/quantumHams/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/quantumhams.svg)](https://pypi.org/project/quantumhams/)
 [![Python](https://img.shields.io/pypi/pyversions/quantumhams.svg)](https://pypi.org/project/quantumhams/)
 
@@ -28,7 +28,7 @@ pip install "quantumhams[cudaq]"
 For development:
 
 ```bash
-git clone https://github.com/venturus/quantumHams.git
+git clone https://github.com/venturusbr/quantumHams.git
 cd quantumHams
 python -m venv .venv
 source .venv/bin/activate
@@ -37,40 +37,63 @@ pre-commit install
 pytest
 ```
 
-## Neutral atoms
+## Examples
+
+### Neutral-atom Bell state
 
 ```python
 import numpy as np
+
 from quantumhams import NeutralAtomRegister, RubidiumRydbergHamiltonian
 
-register = NeutralAtomRegister.square(rows=2, columns=2, spacing=5.5)
+omega = 2.0 * np.pi
+register = NeutralAtomRegister.linear(n_atoms=2, spacing=1.0)
 model = RubidiumRydbergHamiltonian(
     atom_register=register,
-    rabi_frequency=2 * np.pi * 1.0,
-    detuning=2 * np.pi * 0.5,
-    c6=2 * np.pi * 862_690.0,
+    rabi_frequency=omega,
+    detuning=0.0,
+    c6=100.0 * omega,
 )
 
-matrix = model.matrix(sparse=True)
-print(matrix.shape)
+times = np.linspace(0.0, np.pi / (np.sqrt(2.0) * omega), 101)
+result = model.evolve(initial_state="00", times=times)
+
+# Under Rydberg blockade, the final state approaches
+# (|01> + |10>) / sqrt(2).
+print(result.states[-1])
+print(result.probabilities[-1])
 ```
 
-## Trapped ions
+### Trapped-ion Bell state
 
 ```python
 import numpy as np
-from quantumhams import YtterbiumIonChain, YtterbiumMølmerSørensenHamiltonian
 
-chain = YtterbiumIonChain.linear(n_ions=3, spacing=5.0)
-model = YtterbiumMølmerSørensenHamiltonian.power_law(
+from quantumhams import YtterbiumIonChain, YtterbiumMolmerSorensenHamiltonian
+
+coupling = 2.0 * np.pi
+chain = YtterbiumIonChain.linear(n_ions=2, spacing=1.0)
+model = YtterbiumMolmerSorensenHamiltonian.power_law(
     chain=chain,
-    coupling=2 * np.pi * 0.25,
-    exponent=1.2,
-    transverse_field=2 * np.pi * 0.1,
+    coupling=coupling,
+    exponent=0.0,
+    transverse_field=0.0,
 )
 
-result = model.evolve(initial_state="000", times=np.linspace(0.0, 1.0, 11))
+times = np.linspace(0.0, np.pi / (4.0 * coupling), 101)
+result = model.evolve(initial_state="00", times=times)
+
+# The final state approaches (|00> - i|11>) / sqrt(2).
+print(result.states[-1])
 print(result.probabilities[-1])
+```
+
+The complete example supports both technologies and explicit CPU, GPU, or
+automatic backend selection:
+
+```bash
+python examples/bell_state.py --technology neutral-atom --compute cpu
+python examples/bell_state.py --technology trapped-ion --compute auto
 ```
 
 ## Backend selection

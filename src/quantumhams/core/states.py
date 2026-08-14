@@ -26,4 +26,4 @@ def normalize_state(state: np.ndarray, n_qubits: int) -> np.ndarray:
     norm = np.linalg.norm(vector)
     if np.isclose(norm, 0.0):
         raise ValueError("Initial state cannot be the zero vector.")
-    return vector / norm
+    return np.asarray(vector / norm)
