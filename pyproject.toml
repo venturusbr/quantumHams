@@ -7,7 +7,7 @@ name = "quantumhams"
 version = "0.2.0"
 description = "Extensible Hamiltonians and simulation backends for quantum-computing technologies."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 license = {file = "LICENSE"}
 authors = [{name = "Daniel de Haro Moraes"}]
 maintainers = [{name = "Venturus"}]
@@ -17,9 +17,6 @@ classifiers = [
   "Intended Audience :: Science/Research",
   "License :: OSI Approved :: Apache Software License",
   "Operating System :: OS Independent",
-  "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.10",
-  "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Topic :: Scientific/Engineering :: Physics",
