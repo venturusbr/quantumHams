@@ -1,6 +1,6 @@
 site_name: quantumHams
 site_description: Extensible Hamiltonians for quantum-computing technologies
-repo_url: https://github.com/venturus/quantumHams
+repo_url: https://github.com/venturusbr/quantumHams
 repo_name: venturus/quantumHams
 theme:
   name: material
