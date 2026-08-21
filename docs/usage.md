@@ -42,3 +42,22 @@ print(result.states.shape)  # (101, 4)
 portable_result = model.evolve("00", np.linspace(0.0, 1.0, 101))
 print(portable_result.backend)  # cudaq or scipy
 ```
+
+## Finite-shot measurements
+
+Pass `shots` to sample computational-basis measurements at every requested time while
+retaining the exact state vectors and probabilities. `seed` makes simulator sampling
+reproducible.
+
+```python
+result = model.evolve("00", [0.5, 1.0], shots=1_000, seed=42)
+
+print(result.states.shape)       # (2, 4), unchanged exact state vectors
+print(result.bitstrings.shape)   # (2, 1000), one bit string per shot
+print(result.counts[-1])         # e.g. {"00": 503, "11": 497}
+print(result.shots)              # 1000
+```
+
+Calling `evolve()` without `shots` retains the previous behavior; `samples`, `bitstrings`,
+`counts`, and `shots` are then `None`. Sampling is currently performed from the exact state
+vectors produced by the selected simulator backend.

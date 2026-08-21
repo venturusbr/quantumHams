@@ -33,9 +33,14 @@ class HamiltonianModel(ABC):
         times: Sequence[float] | np.ndarray,
         *,
         backend: str = "auto",
+        shots: int | None = None,
+        seed: int | None = None,
     ) -> EvolutionResult:
         if isinstance(initial_state, (str | int)):
             state = basis_state(initial_state, self.n_qubits)
         else:
             state = normalize_state(initial_state, self.n_qubits)
-        return get_backend(backend).evolve(self.pauli_hamiltonian(), state, np.asarray(times))
+        result = get_backend(backend).evolve(self.pauli_hamiltonian(), state, np.asarray(times))
+        if shots is None:
+            return result
+        return result.sample(shots, seed=seed)
