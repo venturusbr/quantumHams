@@ -32,6 +32,25 @@ Do not assume CUDA-Q is installed or installable in the agent's sandbox — trea
 `tests/test_cudaq_backend.py` and the `cudaq_backend` module as environment-dependent; code
 must keep working when CUDA-Q is absent (see `backends/auto_backend.py`'s fallback behavior).
 
+### Containerized dev environment (`tools/`)
+
+As an alternative to a local venv, `tools/run.sh` builds a `python:3.12-slim`-based Docker
+image and runs it with the project root bind-mounted into `/workspace`. Must be invoked from
+the project root:
+
+```bash
+tools/run.sh            # build image, install quantumhams editable, drop into bash
+tools/run.sh pytest     # same, then run a command instead of an interactive shell
+tools/run.sh ruff check .
+tools/run.sh mypy src/quantumhams
+```
+
+The image itself never copies in project source; `tools/entrypoint.sh` runs
+`pip install -e ".[dev,docs]"` against the mounted source on every container start, so
+host-side edits are reflected immediately without rebuilding. CUDA-Q is not installed in this
+image. See `tools/README.md` for details and trade-offs (notably: every start re-installs deps
+over the network unless pip's cache is warm — an accepted simplicity trade-off).
+
 ## Commands
 
 Run these from the repo root (hatch scripts are defined in `pyproject.toml`):
@@ -132,6 +151,8 @@ fallback behavior explicit and tested.
   docstrings accurate and complete for anything public.
 - Update `docs/usage.md` / `docs/extending.md` and `README.md` when public API or usage
   patterns change; run `mkdocs build --strict` to catch broken references before finishing.
+- Update `tools/README.md` if `tools/Dockerfile`, `tools/entrypoint.sh`, or `tools/run.sh`
+  change, so the containerized dev environment stays documented.
 
 ## Commits / PRs
 
